@@ -1,25 +1,34 @@
 import React from 'react';
-import logo from './logo.svg';
+import ViewNotes from './Pages/ViewNotes/ViewNotes';
+import CreateNote from './Pages/CreateNote/CreateNote';
+import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
+
 import './App.css';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="App">
+        <div className="navigationBar">
+          <div className="container">
+            <div className="navigationLinks">
+              <Link className="navLink" to="/">HOME</Link>
+              <Link className="navLink" to="/notes">View Notes</Link>
+            </div>
+          </div>
+        </div>
+        <main>
+          <Switch>
+            <Route path="/notes">
+              <ViewNotes />
+            </Route>
+            <Route path="/" component={CreateNote} />
+              {/* <CreateNote />
+            </Route> */}
+          </Switch>
+        </main> 
+      </div>
+    </Router>
   );
 }
 

@@ -1,0 +1,9 @@
+.note {
+  padding: 1rem;
+  margin-bottom: 1.3rem;
+  border: 1px solid black;
+}
+
+.title {
+  font-size: 1.2rem
+}
