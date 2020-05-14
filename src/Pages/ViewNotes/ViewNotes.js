@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Note from '../../Components/Note/Note';
+import './ViewNotes.css';
 
 function ViewNotes() {
   const [notes, setNotes] = useState([]);
@@ -21,11 +22,11 @@ function ViewNotes() {
   }, []);
 
   const listOfNotes = notes.map(note => {
-    return <Note key={note.id} title={note.title} body={note.body}/>;
+    return <Note key={note.id} id={note.id} title={note.title} body={note.body}/>;
   });
 
   return (
-    <div className="ViewNotes">
+    <div className="viewNotes">
       {listOfNotes}
     </div>
   );

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './CreateNote.css';
 
 function CreateNote( {history} ) {
   const [titleText, setTitleText] = useState('');
