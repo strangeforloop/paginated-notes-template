@@ -1,3 +1,9 @@
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 .viewNotes {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -5,7 +11,8 @@
 }
 
 .pagination {
-  margin-top: 25px;
+  display: block;
+  margin: 0.8rem 0;
 }
 
 .pagination span {

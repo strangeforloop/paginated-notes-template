@@ -1,7 +1,25 @@
+form {
+  width: 45%;
+  max-width: 550px;
+}
+
 .CreateNote {
   margin-bottom: 2rem;
 }
 
 button {
+  padding: 0.5rem;
   display: block;
+  font-size: 0.9rem;
+  width: 50%;
+}
+
+.titleInput {
+  width: 100%;
+}
+
+.bodyInput {
+  height: 100px;
+  width: 100%;
+  margin-bottom: 0.5rem;
 }

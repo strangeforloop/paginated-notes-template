@@ -11,6 +11,18 @@ function NoteFooter({ id, title }) {
     console.log(response);
   }
 
+  return (
+    <div className="noteFooter">
+      <div className="delete" onClick={handleClick}>
+        delete
+      </div>
+    </div>
+  );
+}
+
+export default NoteFooter;
+
+
   // useEffect(() => {
   //   const getNotes = async () => {
   //     const response = await fetch('http://note.dev.cloud.lightform.com/notes', {
@@ -26,14 +38,3 @@ function NoteFooter({ id, title }) {
 
   //   getNotes();
   // }, []);
-
-  return (
-    <div className="noteFooter">
-      <div className="delete" onClick={handleClick}>
-        delete
-      </div>
-    </div>
-  );
-}
-
-export default NoteFooter;

@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import './CreateNote.css';
 
-function CreateNote( {history} ) {
+function CreateNote({onNotesChange}) {
   const [titleText, setTitleText] = useState('');
   const [bodyText, setBodyText] = useState('');
+  const [submit, setWasSubmitted] = useState(false);
+  const [show, setShow] = useState(false);
 
   const handleSubmit = function(e) {
     e.preventDefault();
@@ -20,15 +22,17 @@ function CreateNote( {history} ) {
       })
     }).then(async (response) => {
         console.log('Success: ', await response.json());
-        // history.push('/notes');
       }).catch((error) => {
         console.log('Error: ', error);
       })
+      setShow(!show);
+      onNotesChange();
     };
 
   return (
     <div className="CreateNote">
       <form onSubmit={handleSubmit}>
+        {!show ? <div>a</div> : <div>b</div>}
         <label>
           <div className="createNoteLabel">Title</div>
           <textarea 

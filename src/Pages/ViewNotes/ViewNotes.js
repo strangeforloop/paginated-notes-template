@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import Note from '../../Components/Note/Note';
+import CreateNote from '../CreateNote/CreateNote';
 import './ViewNotes.css';
 
 function ViewNotes() {
   const itemsPerPage = 10;
+  const [initialTotal, setInitialTotal] = useState(0);
   const [total, setTotal] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [notes, setNotes] = useState([]);
+  const [noteToChange, setNoteToChange] = useState(50);
 
-  const getNotesForPage = async function(pageNumber) {
+  const getNotesForPage = async function (pageNumber) {
+    console.log('notes inside getNotesForPage', notes);
     const response = await fetch(`http://note.dev.cloud.lightform.com/notes?page=${pageNumber}`, {
       method: 'GET'
     });
@@ -27,28 +31,74 @@ function ViewNotes() {
     console.log(notesArray);
   }
 
-  // Upon initial loading, show the last page of notes
-  // Issue: It calculates how many pagination buttons to show
-  // but doesn't display data
   useEffect(() => {
-    debugger;
+    getNotesForPage(Math.ceil(initialTotal/itemsPerPage));
+  }, [initialTotal]);
+
+  const getInitialTotal = async function () {
+    // have to make an initial request to the first page
+    // in order to get the total so we can calculate last page
+    const response = await fetch(`http://note.dev.cloud.lightform.com/notes?page=1`, {
+      method: 'GET'
+    });
+    console.log(response);
+
+    const data = await response.json();
+    console.log(data);
+
+    setInitialTotal(data.total);
+  }
+
+  useEffect(() => {
     console.log('calling');
-    // debugger;
-    getNotesForPage(5);
-    // console.log('notes!!', notes);
-    // let listOfNotes = notes.map(note => {
-      // return <Note key={note.id} id={note.id} title={note.title} body={note.body} />;
-    // });
+    getInitialTotal();
   }, []);
 
-  const listOfNotes = notes.map(note => {
-    return <Note key={note.id} id={note.id} title={note.title} body={note.body} />;
+  useEffect(() => {
+    console.log('TOTAL WAS UPDATED');
+  }, [total]);
+
+  const handleNotesChange = (id) => {
+    console.log('changing a note');
+    setNoteToChange(id);
+
+    for (var i = notes.length - 1; i >= 0; --i) {
+      if (notes[i].id === id) {
+        notes.splice(i, 1);
+      }
+    }
+
+    getNotesForPage(currentPage);
+  }
+  
+  const handleAddNote = () => {
+    notes.push({ id: 0, title: "dummy", body: "things" });
+    const helperTotal = total + 1;
+    // setTotal(total + 1);
+    // check helperTotal here: should be 11
+    const lastPage = Math.ceil(helperTotal / itemsPerPage);
+    // check that lastPage is 2
+    setCurrentPage(lastPage);
+    // check that currentPage is 2
+    // // debugger;
+    getNotesForPage(lastPage);
+    // // update listOfNotes so there's a re-render
+    // let listOfNotes = notes.map(note => {
+    //   return <Note onNotesChange={handleNotesChange} key={note.id} id={note.id} title={note.title} body={note.body} />;
+    // });
+  }
+
+  console.log('------------calculating listOfNotes');
+  let listOfNotes = notes.map(note => {
+    return <Note onNotesChange={handleNotesChange} key={note.id} id={note.id} title={note.title} body={note.body} />;
   });
-  // console.log('b: ', notes);
+  console.log(listOfNotes);
 
   // Calculate Page Numbers
   const pageNumbers = [];
   const numberOfPages = Math.ceil(total / itemsPerPage);
+  console.log('total', total);
+  console.log('number of pages: ', numberOfPages);
 
   for (let i = numberOfPages; i >= 1; i--) {
     pageNumbers.push(i);
@@ -63,56 +113,33 @@ function ViewNotes() {
     );    
   });
 
-
-  // complete logic for conditional rendering
-
   return (
-    <div className="viewNotes">
-      {/* <div>below</div>
-      <Router>
-        <Link to="/test">test</Link>
-        <Route path="/test">
-          <p>Stuff that gets rendered</p>
-        </Route>
-      </Router>
-      <div>above</div> */}
+    <div className="content">
+      <CreateNote onNotesChange={handleAddNote} />
+        <Router>
+          <div className="viewNotes">
+            {listOfNotes}
+          </div>
+          {/* {console.log('list of notes', listOfNotes)} */}
+          <div className="pagination">
+            <span>&laquo;</span>      
+            {
+              pageNumbers.map(number => {
+                let classes = currentPage === number ? 'active' : '';
 
-      {listOfNotes}
-      {console.log('list of notes', listOfNotes)}
-      hi
-      <div className="pagination">
-        <span>&laquo;</span>      
-        {renderPageNumbers}
-        <span>&raquo;</span> 
-      </div>
+                return (
+                  <Link to={`/page=${number}`}>
+                    <span key={number} className={classes} onClick={() => getNotesForPage(number)}>{number}
+                    </span>
+                  </Link>
+                );
+              })
+            }
+            <span>&raquo;</span> 
+          </div>
+        </Router>
     </div>
   );
 }
 
 export default ViewNotes;
-
-  // useEffect(() => {
-  //   const getNotes = async () => {
-  //     const response = await fetch('http://note.dev.cloud.lightform.com/notes', {
-  //       method: 'GET'
-  //     });
-  //     console.log(response);
-
-  //     const data = await response.json();
-  //     const notesArray = await data._embedded.notes;
-  //     setNotes(notesArray);
-  //     console.log('data', data._embedded.notes);
-  //   }
-
-  //   getNotes();
-  // }, []);
-
-  // const listOfNotes = notes.map(note => {
-  //   return <Note key={note.id} id={note.id} title={note.title} body={note.body} />;
-  // });
-
-  // return (
-  //   <div className="viewNotes">
-  //     {listOfNotes}
-  //   </div>
-  // );

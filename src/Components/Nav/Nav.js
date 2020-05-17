@@ -3,7 +3,7 @@ import React from 'react';
 function Nav() {
   return (
     <div className="Nav">
-      <div>Navbar</div>
+      <div style={{margin: '1rem 2rem'}}>Navbar</div>
     </div>
   );
 }
