@@ -72,21 +72,16 @@ function ViewNotes() {
   }
   
   const handleAddNote = () => {
-    notes.push({ id: 0, title: "dummy", body: "things" });
     const helperTotal = total + 1;
-    // setTotal(total + 1);
-    // check helperTotal here: should be 11
     const lastPage = Math.ceil(helperTotal / itemsPerPage);
-    // check that lastPage is 2
-    setCurrentPage(lastPage);
-    // check that currentPage is 2
-    // // debugger;
-    getNotesForPage(lastPage);
-    // // update listOfNotes so there's a re-render
-    // let listOfNotes = notes.map(note => {
-    //   return <Note onNotesChange={handleNotesChange} key={note.id} id={note.id} title={note.title} body={note.body} />;
-    // });
+    // setCurrentPage(lastPage);
+    // getNotesForPage(lastPage);
   }
+
+  useEffect(() => {
+    console.log('--- the notes were updated.');
+    console.log('notes', notes);
+  }, [notes]);
 
   console.log('------------calculating listOfNotes');
   let listOfNotes = notes.map(note => {
