@@ -22,17 +22,46 @@ function Note({onNotesChange, id, title, body}) {
     onNotesChange(id);
   }
 
+  const editor = <div className="editor">
+    <div className="close">x</div>
+    {/* <form>
+      <label>
+        <div className="createNoteLabel">Title</div>
+        <textarea
+          label="Title"
+          value={title}
+          className="titleInput"
+        >
+        </textarea>
+      </label>
+      <label>
+        <div className="createNoteLabel">Body</div>
+        <textarea
+          label="Body"
+          value={body}
+          className="bodyInput"
+          // on submit, set body of parent
+        >
+        </textarea>
+      </label>
+      <button type="submit">Create Your Note!</button>
+    </form>; */}
+  </div>;
+
   return (
-    <div className="note" onClick={handleEdit}>
-      <div className="noteText">
-        <p className="title">{title}</p>
-        <div className="body">{body}</div>
-      </div>
-      <div className="noteFooter">
-        <div className="delete" onClick={handleDelete}>
-          delete
+    <div className="note">
+      <div>
+        <div className="noteText" onClick={handleEdit}>
+          <p className="title">{title}</p>
+          <div className="body">{body}</div>
+        </div>
+        <div className="noteFooter">
+          <div className="delete" onClick={handleDelete}>
+            delete
+          </div>
         </div>
       </div>
+      {open ? editor : ''}
     </div>
   );
 }

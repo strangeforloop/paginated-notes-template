@@ -6,35 +6,37 @@ import './ViewNotes.css';
 
 function ViewNotes() {
   const itemsPerPage = 10;
+  const [currentPage, setCurrentPage] = useState(1);
+  const [wasChanged, setWasChanged] = useState(false);
   const [initialTotal, setInitialTotal] = useState(0);
   const [total, setTotal] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
   const [notes, setNotes] = useState([]);
-  const [noteToChange, setNoteToChange] = useState(50);
+
+  useEffect(() => {
+    getNotesForPage(currentPage);
+  }, [wasChanged, currentPage]);
 
   const getNotesForPage = async function (pageNumber) {
-    console.log('notes inside getNotesForPage', notes);
-    const response = await fetch(`http://note.dev.cloud.lightform.com/notes?page=${pageNumber}`, {
+    await fetch(`http://note.dev.cloud.lightform.com/notes?page=${pageNumber}`, {
       method: 'GET'
+    }).then(response => response.json()).then((data) => {
+      setTotal(data.total);
+      setCurrentPage(pageNumber);
+      let notesArray = data._embedded.notes;
+      notesArray = notesArray.sort((a, b) => b.id - a.id);
+      setNotes(notesArray);
     });
-    console.log(response);
-    
-    const data = await response.json();
-    console.log(data);
-    
-    setTotal(data.total);
-    setCurrentPage(pageNumber);
-    
-    let notesArray = await data._embedded.notes;
-    notesArray = notesArray.sort((a, b) => b.id - a.id);
-    setNotes(notesArray);
-    console.log(notesArray);
   }
 
   useEffect(() => {
     getNotesForPage(Math.ceil(initialTotal/itemsPerPage));
   }, [initialTotal]);
 
+
+  useEffect(() => {
+    getInitialTotal();
+  }, []);
+  
   const getInitialTotal = async function () {
     // have to make an initial request to the first page
     // in order to get the total so we can calculate last page
@@ -49,51 +51,26 @@ function ViewNotes() {
     setInitialTotal(data.total);
   }
 
-  useEffect(() => {
-    console.log('calling');
-    getInitialTotal();
-  }, []);
-
-  useEffect(() => {
-    console.log('TOTAL WAS UPDATED');
-  }, [total]);
-
-  const handleNotesChange = (id) => {
-    console.log('changing a note');
-    setNoteToChange(id);
-
-    for (var i = notes.length - 1; i >= 0; --i) {
-      if (notes[i].id === id) {
-        notes.splice(i, 1);
-      }
-    }
-
-    getNotesForPage(currentPage);
+  const handleDeleteNote = (id) => {
+    setWasChanged(!wasChanged);
   }
   
   const handleAddNote = () => {
-    const helperTotal = total + 1;
-    const lastPage = Math.ceil(helperTotal / itemsPerPage);
-    // setCurrentPage(lastPage);
-    // getNotesForPage(lastPage);
+    setWasChanged(!wasChanged);
+    setCurrentPage(Math.ceil((total + 1)/itemsPerPage));
   }
 
-  useEffect(() => {
-    console.log('--- the notes were updated.');
-    console.log('notes', notes);
-  }, [notes]);
+  const handleUpdateNote = () => {}
 
   console.log('------------calculating listOfNotes');
+  console.dir(notes);
   let listOfNotes = notes.map(note => {
-    return <Note onNotesChange={handleNotesChange} key={note.id} id={note.id} title={note.title} body={note.body} />;
+    return <Note onNotesChange={handleDeleteNote} key={note.id} id={note.id} title={note.title} body={note.body} />;
   });
-  console.log(listOfNotes);
 
   // Calculate Page Numbers
   const pageNumbers = [];
   const numberOfPages = Math.ceil(total / itemsPerPage);
-  console.log('total', total);
-  console.log('number of pages: ', numberOfPages);
 
   for (let i = numberOfPages; i >= 1; i--) {
     pageNumbers.push(i);
@@ -113,9 +90,13 @@ function ViewNotes() {
       <CreateNote onNotesChange={handleAddNote} />
         <Router>
           <div className="viewNotes">
-            {listOfNotes}
+            {/* {listOfNotes} */}
+            {
+            notes.map(note => {
+              return <Note onNotesChange={handleDeleteNote} onClick={handleUpdateNote} key={note.id} id={note.id} title={note.title} body={note.body} />;
+            })
+            }
           </div>
-          {/* {console.log('list of notes', listOfNotes)} */}
           <div className="pagination">
             <span>&laquo;</span>      
             {
@@ -124,7 +105,8 @@ function ViewNotes() {
 
                 return (
                   <Link to={`/page=${number}`}>
-                    <span key={number} className={classes} onClick={() => getNotesForPage(number)}>{number}
+                    {/* <span key={number} className={classes} onClick={() => getNotesForPage(number)}>{number} */}
+                    <span key={number} className={classes} onClick={() => setCurrentPage(number)}>{number}
                     </span>
                   </Link>
                 );

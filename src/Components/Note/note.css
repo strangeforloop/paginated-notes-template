@@ -11,3 +11,17 @@
 .delete:hover {
   cursor: pointer;
 }
+
+.editor {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  border: 1px solid blue;
+  background-color: white;
+  width: 300px;
+  padding: 1rem;
+}
+
+.editor .close:hover {
+  cursor: pointer;
+}
