@@ -2,6 +2,7 @@
   padding: 1rem;
   margin-bottom: 1.3rem;
   border: 1px solid black;
+  border-radius: 3px;
 }
 
 .title {
@@ -14,14 +15,27 @@
 
 .editor {
   position: absolute;
-  left: 50%;
-  top: 50%;
+  left: 33%;
+  top: 30%;
   border: 1px solid blue;
   background-color: white;
   width: 300px;
   padding: 1rem;
+  border-radius: 5px;
+  transition: fade-in;
+}
+
+.editor form {
+  width: 95%;
 }
 
 .editor .close:hover {
   cursor: pointer;
+}
+
+.close {
+  padding: 0.5rem;
+  /* border: 1px solid black; */
+  width: 15px;
+  color: red;
 }

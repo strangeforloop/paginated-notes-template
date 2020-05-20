@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Link } from 'react-router-dom';
 import Note from '../../Components/Note/Note';
 import CreateNote from '../CreateNote/CreateNote';
 import './ViewNotes.css';
@@ -62,11 +62,11 @@ function ViewNotes() {
 
   const handleUpdateNote = () => {}
 
-  console.log('------------calculating listOfNotes');
-  console.dir(notes);
-  let listOfNotes = notes.map(note => {
-    return <Note onNotesChange={handleDeleteNote} key={note.id} id={note.id} title={note.title} body={note.body} />;
-  });
+  // console.log('------------calculating listOfNotes');
+  // console.dir(notes);
+  // let listOfNotes = notes.map(note => {
+  //   return <Note onNotesChange={handleDeleteNote} key={note.id} id={note.id} title={note.title} body={note.body} />;
+  // });
 
   // Calculate Page Numbers
   const pageNumbers = [];
@@ -77,13 +77,13 @@ function ViewNotes() {
   }
 
   // Pagination Elements
-  const renderPageNumbers = pageNumbers.map(number => {
-    let classes = currentPage === number ? 'active' : '';
+  // const renderPageNumbers = pageNumbers.map(number => {
+  //   let classes = currentPage === number ? 'active' : '';
 
-    return (
-      <span key={number} className={classes} onClick={() => getNotesForPage(number)}>{number}</span>
-    );    
-  });
+  //   return (
+  //     <span key={number} className={classes} onClick={() => getNotesForPage(number)}>{number}</span>
+  //   );    
+  // });
 
   return (
     <div className="content">

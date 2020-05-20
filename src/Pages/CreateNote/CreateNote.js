@@ -33,8 +33,8 @@ function CreateNote({onNotesChange}) {
     setIsOpen(!isOpen);
   }
 
-  let closedView = <div onClick={toggleView}>
-    <textarea>Take a note</textarea>
+  let closedView = <div className="closedView" onClick={toggleView}>
+    <textarea defaultValue="" placeholder="Take a note"></textarea>
   </div>;
 
   let openView = <form onSubmit={handleSubmit}>

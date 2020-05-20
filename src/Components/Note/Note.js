@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
+import React, { useState } from 'react';
 import NoteFooter from '../NoteFooter/NoteFooter';
 import './note.css';
 
 function Note({onNotesChange, id, title, body}) {
   const [open, setOpen] = useState(false);
+  const [editTitle, setEditTitle] = useState(title);
+  const [editBody, setEditBody] = useState(body);
 
   const handleEdit = () => {
     setOpen(true);
@@ -22,14 +23,29 @@ function Note({onNotesChange, id, title, body}) {
     onNotesChange(id);
   }
 
-  const editor = <div className="editor">
+  const handleUpdate = async () => {
+    await fetch(`http://note.dev.cloud.lightform.com/notes/${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        title: editTitle,
+        body: editBody
+      })
+    });
+  }
+
+  const editor = <div to={`/notes=${id}`} className="editor">
     <div className="close">x</div>
-    {/* <form>
+    <form onSubmit={handleUpdate}>
       <label>
         <div className="createNoteLabel">Title</div>
         <textarea
           label="Title"
-          value={title}
+          value={editTitle}
+          onChange={(e) => {setEditTitle(e.target.value)}}
           className="titleInput"
         >
         </textarea>
@@ -38,14 +54,14 @@ function Note({onNotesChange, id, title, body}) {
         <div className="createNoteLabel">Body</div>
         <textarea
           label="Body"
-          value={body}
+          value={editBody}
+          onChange={(e) => setEditBody(e.target.value)}
           className="bodyInput"
-          // on submit, set body of parent
         >
         </textarea>
       </label>
-      <button type="submit">Create Your Note!</button>
-    </form>; */}
+      <button type="submit">Update</button>
+    </form>
   </div>;
 
   return (
@@ -56,12 +72,12 @@ function Note({onNotesChange, id, title, body}) {
           <div className="body">{body}</div>
         </div>
         <div className="noteFooter">
-          <div className="delete" onClick={handleDelete}>
+          <button className="delete" onClick={handleDelete}>
             delete
-          </div>
+          </button>
         </div>
       </div>
-      {open ? editor : ''}
+        {open ? editor : ''}
     </div>
   );
 }
