@@ -1,6 +1,35 @@
 import React, { useState } from 'react';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 import NoteFooter from '../NoteFooter/NoteFooter';
 import './note.css';
+
+function editor() { 
+  console.log('editor is open')
+  return(
+    <div className="editor">
+      <div className="close">x</div>
+      <form>
+        <label>
+          <div className="createNoteLabel">Title</div>
+          <textarea
+            label="Title"
+            className="titleInput"
+          >
+          </textarea>
+        </label>
+        <label>
+          <div className="createNoteLabel">Body</div>
+          <textarea
+            label="Body"
+            className="bodyInput"
+          >
+          </textarea>
+        </label>
+        <button type="submit">Update</button>
+      </form>
+    </div>
+  );
+}
 
 function Note({onNotesChange, id, title, body}) {
   const [open, setOpen] = useState(false);
@@ -37,32 +66,36 @@ function Note({onNotesChange, id, title, body}) {
     });
   }
 
-  const editor = <div to={`/notes=${id}`} className="editor">
-    <div className="close">x</div>
-    <form onSubmit={handleUpdate}>
-      <label>
-        <div className="createNoteLabel">Title</div>
-        <textarea
-          label="Title"
-          value={editTitle}
-          onChange={(e) => {setEditTitle(e.target.value)}}
-          className="titleInput"
-        >
-        </textarea>
-      </label>
-      <label>
-        <div className="createNoteLabel">Body</div>
-        <textarea
-          label="Body"
-          value={editBody}
-          onChange={(e) => setEditBody(e.target.value)}
-          className="bodyInput"
-        >
-        </textarea>
-      </label>
-      <button type="submit">Update</button>
-    </form>
-  </div>;
+  const handleClose = () => {
+
+  }
+
+  // const editor = <div className="editor">
+  //   <div className="close" onClick={handleClose}>x</div>
+  //   <form onSubmit={handleUpdate}>
+  //     <label>
+  //       <div className="createNoteLabel">Title</div>
+  //       <textarea
+  //         label="Title"
+  //         value={editTitle}
+  //         onChange={(e) => {setEditTitle(e.target.value)}}
+  //         className="titleInput"
+  //       >
+  //       </textarea>
+  //     </label>
+  //     <label>
+  //       <div className="createNoteLabel">Body</div>
+  //       <textarea
+  //         label="Body"
+  //         value={editBody}
+  //         onChange={(e) => setEditBody(e.target.value)}
+  //         className="bodyInput"
+  //       >
+  //       </textarea>
+  //     </label>
+  //     <button type="submit">Update</button>
+  //   </form>
+  // </div>;
 
   return (
     <div className="note">
@@ -77,7 +110,9 @@ function Note({onNotesChange, id, title, body}) {
           </button>
         </div>
       </div>
-        {open ? editor : ''}
+        <Router>
+          {open ? <Route path="/:id" component={editor} /> : 'bob'}
+        </Router>
     </div>
   );
 }

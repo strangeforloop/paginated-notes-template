@@ -1,28 +1,44 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Link } from 'react-router-dom';
 import Note from '../../Components/Note/Note';
+import queryString from 'query-string';
+// import Pagination from 'rc-pagination';
+
 // import CreateNote from '../CreateNote/CreateNote';
 import './Notes.css';
 
 import { getNotes } from '../../api';
 
-function Notes() {
-  // const itemsPerPage = 10;
-  // const [currentPage, setCurrentPage] = useState(1);
-  // const [wasChanged, setWasChanged] = useState(false);
-  // const [initialTotal, setInitialTotal] = useState(0);
-  // const [total, setTotal] = useState(0);
+function Notes({ match, location }) {
   const [notes, setNotes] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [previousPage, setPreviousPage] = useState(1);
+  const [nextPage, setNextPage] = useState(1);
 
   useEffect(() => {
     console.log('notes were updated', notes);
   }, [notes]);
 
   useEffect(() => {
+    console.log('NEXTTT page: ', nextPage);
+  }, [nextPage]);
+
+  useEffect(() => {
+    console.log('PREVIOUS page: ', previousPage);
+  }, [previousPage]);
+
+  useEffect(() => {
     const getPageNotes = async () => {
       await getNotes(currentPage).then(response => response.json()).then((data) => {
-        setNotes(data);
+        setNotes(data._embedded.notes);
+
+        let re = /\?page=(.*)/;
+        let pageAsString = data.links.next ? data.links.next.match(re)[1] : null;
+        setNextPage(Number(pageAsString));
+
+        console.log('current page: ', currentPage, 'prev info: ', data.links.prev);
+        pageAsString = data.links.prev ? data.links.prev.match(re)[1] : null;
+        setPreviousPage(Number(pageAsString));
       }).catch(e => {
         console.log(e);
       })
@@ -31,22 +47,33 @@ function Notes() {
     getPageNotes();
   }, [currentPage]);
 
+  // let query = queryString.parse(location.search);
+  // let params = new URLSearchParams(query);
+  // let q = parseInt(params.get("q"));
+  // { console.log('match:', match) }
+  // { console.log('location:', location) }
+  // { console.log(queryString.parse(location.search)) }
+
+  let previousPaginationControl = previousPage ? (<Link to={`/notes?page=${previousPage}`}>
+    <span onClick={() => setCurrentPage(previousPage)}>&laquo; prev</span>
+</Link>) : '';
+
+  let nextPaginationControl = nextPage ? (<Link to={`/notes?page=${nextPage}`}>
+    {console.log('going to ', nextPage)}
+    <span onClick={() => setCurrentPage(nextPage)}>next &raquo;</span>
+</Link>) : '';
+
   return(
-    <div> 
-      Notes Page
-      <div></div>
-      <span>&laquo; prev</span>
-      <Link to={`/notes?page=1`}>
-        <span>next &raquo;</span>
-      </Link>
+    <div>
+      {previousPaginationControl}
+      {nextPaginationControl}
+
       {notes.map(note => {
-        return <Note key={note.id} id={note.id} title={note.title} body={note.body} />
+        return <Link to={`${note.id}`}><Note key={note.id} id={note.id} title={note.title} body={note.body} /></Link>
       })}
-      <div></div>
-      <span>&laquo; prev</span>
-      <Link to={`/notes?page=1`}>
-        <span onClick={() => setCurrentPage(currentPage)}>next &raquo;</span>
-      </Link>
+
+      {previousPaginationControl}
+      {nextPaginationControl}
     </div>
   );
 }

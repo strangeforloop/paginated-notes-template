@@ -14,12 +14,13 @@ function App() {
       <main>
         {/* <ViewNotes /> */} 
         <Router>
-          <Link to="/notes"><li>Notes</li></Link>
-          <Link to="/test"><li>Test</li></Link>
+          <Link to="/"></Link>
+          {/* <Link to="/notes"><li>Notes</li></Link>
+          <Link to="/test"><li>Test</li></Link> */}
           <Switch>
-            <Route path="/" exact component={TestPage}/>
+            <Route path="/" component={Notes}/>
             <Route path="/notes" component={Notes}/>
-      
+            {/* <Route path="/notes/:id" /> */}
           </Switch>
         </Router>
       </main>
